@@ -1,7 +1,10 @@
 #include <SPI.h>
 #include <Ethernet.h>
 #include <PubSubClient.h>
-#include <ArduinoJson.h>
+// #include <ArduinoJson.h>
+#include <Wire.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BME280.h>
 
 // ============================================================================
 //  DEBUG PRINT MACROS
@@ -40,4 +43,5 @@ uint32_t ledTimer = 0;  // oneshot timer for blinking LED
 //  Function Prototype
 //
 void mqttCallback(char* topic, byte* payload, unsigned int length);
-void PublishMessage(String topic, String message, boolean retained = false);
+// void PublishMessage(String topic, String message, boolean retained = false);
+void PublishMessage(const char *topic, char *message, boolean retained = false);

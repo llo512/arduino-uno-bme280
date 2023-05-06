@@ -3,13 +3,17 @@
 // ===== Object Instances =====
 EthernetClient ethClient;
 PubSubClient mqttClient(ethClient);
-DynamicJsonDocument jsonDoc(1024);
+// DynamicJsonDocument jsonDoc(1024);
 
 // ===== MQTT VARIABLES =====
 const char TOPIC[ ] = "home/office";
 const char SUBTOPIC[ ] = "home/office/#";          // MQTT device subscripton Topic
 const char DEVSTATUS[ ] = "home/office/status";    // MQTT device status toic
 const char DEVCMD[ ] = "home/office/command";      // MQTT device command topic
+const char OFFICETEMP[ ] = "home/office/temperature";
+const char OFFICERH[ ] = "home/office/humidity";
+const char OFFICEHG[ ] = "home/office/hg";
+const char OFFICEUPTIME[ ] = "home/office/uptime";
 const char WILLMSG[ ] = "{\"office_monitor\": \"offline\"}";
 const char ONLINEMSG[ ] = "{\"office_monitor\": \"online\"}";
 
@@ -42,7 +46,7 @@ void mqttConnect() {
 //+++++++++++++++++++++++++++++++++++++++++++++++++++
 //++++++++++    Publish Data Over MQTT     ++++++++++
 //+++++++++++++++++++++++++++++++++++++++++++++++++++
-void PublishMessage(String topic, String message, boolean retained)
+/* void PublishMessage(String topic, String message, boolean retained)
 {
     char pub_topic[80] = {0};
     char pub_msg[80] = {0};
@@ -55,6 +59,16 @@ void PublishMessage(String topic, String message, boolean retained)
       Dprintln("Failed to publish online message");
   }
 }
+*/
+void PublishMessage(const char *topic, char *message, boolean retained) {
+
+    if(mqttClient.connected()) {
+        if(!mqttClient.publish(topic, message, retained))
+        {
+            Dprintln("Failed to publish message");
+        }
+    }
+}
 
 // ######################################
 // #####        MQTT HANDLERS       #####
@@ -63,10 +77,10 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
     // handle message arrived
     payload[length] = '\0';
     String s = String((char*)payload);
-    Dprint(topic);
-    Dprint(": ");
-    Dprintln(s);
-
+    // Dprint(topic);
+    // Dprint(": ");
+    // Dprintln(s);
+    /*
     auto error = deserializeJson(jsonDoc, payload);
     if (error) {
         Serial.print(F("deserializeJson() failed with code "));
@@ -77,7 +91,7 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
         JsonObject root = jsonDoc.as<JsonObject>();
         String command = root["command"];
         if(command == "status") {
-            Dprintln("status command");
+            // Dprintln("status command");
             // PublishMessage(TOPIC, jsonKeyValue("motion", motionState));
         }
         else {
@@ -85,5 +99,6 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
         }
         // End of JSON command parsing
     }
+    */
     // End of JSON parsing
 }
